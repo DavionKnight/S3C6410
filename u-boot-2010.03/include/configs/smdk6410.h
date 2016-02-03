@@ -32,6 +32,10 @@
 #ifndef __CONFIG_H
 #define __CONFIG_H
 
+/*add by kevin 2016-2-3*/
+#define virt_to_phys(x) virt_to_phy_smdk6410(x)
+/*add end*/
+
 /*
  * High Level Configuration Options
  * (easy to change)
@@ -56,7 +60,9 @@
 /*
  * Architecture magic and machine type
  */
-#define MACH_TYPE		1270
+/* #define MACH_TYPE		1270 */
+#define MACH_TYPE		1626 
+
 
 #define CONFIG_DISPLAY_CPUINFO
 #define CONFIG_DISPLAY_BOARDINFO
@@ -66,7 +72,8 @@
 /*
  * Size of malloc() pool
  */
-#define CONFIG_SYS_MALLOC_LEN		(CONFIG_ENV_SIZE + 1024 * 1024)
+/* #define CONFIG_SYS_MALLOC_LEN		(CONFIG_ENV_SIZE + 1024 * 1024)*/
+#define CONFIG_SYS_MALLOC_LEN		(CONFIG_ENV_SIZE + 512 * 1024)
 #define CONFIG_SYS_GBL_DATA_SIZE	128	/* size in bytes for initial data */
 
 /*
@@ -84,7 +91,7 @@
 
 #define CONFIG_SYS_HUSH_PARSER			/* use "hush" command parser	*/
 #ifdef CONFIG_SYS_HUSH_PARSER
-#define CONFIG_SYS_PROMPT_HUSH_PS2	"> "
+#define CONFIG_SYS_PROMPT_HUSH_PS2	"SMDK6410.#"
 #endif
 
 #define CONFIG_CMDLINE_EDITING
@@ -126,18 +133,22 @@
  * Miscellaneous configurable options
  */
 #define CONFIG_SYS_LONGHELP				/* undef to save memory	      */
-#define CONFIG_SYS_PROMPT		"SMDK6410 # "	/* Monitor Command Prompt     */
+#define CONFIG_SYS_PROMPT		"Kevin # "	/* Monitor Command Prompt     */
 #define CONFIG_SYS_CBSIZE		256		/* Console I/O Buffer Size    */
 #define CONFIG_SYS_PBSIZE		384		/* Print Buffer Size          */
 #define CONFIG_SYS_MAXARGS		16		/* max number of command args */
 #define CONFIG_SYS_BARGSIZE		CONFIG_SYS_CBSIZE	/* Boot Argument Buffer Size  */
 
 #define CONFIG_SYS_MEMTEST_START	CONFIG_SYS_SDRAM_BASE	/* memtest works on	      */
-#define CONFIG_SYS_MEMTEST_END		(CONFIG_SYS_SDRAM_BASE + 0x7e00000) /* 126MB in DRAM */
+/*#define CONFIG_SYS_MEMTEST_END		(CONFIG_SYS_SDRAM_BASE + 0x7e00000)*/ /* 126MB in DRAM */
+#define CONFIG_SYS_MEMTEST_END		(CONFIG_SYS_SDRAM_BASE + 0x9e00000) /* 126MB in DRAM */
 
 #define CONFIG_SYS_LOAD_ADDR		CONFIG_SYS_SDRAM_BASE	/* default load address	*/
 
-#define CONFIG_SYS_HZ			1000
+/*thePWMTImer4usesacounterof15625for10ms,soweneed*/
+/*ittowrap100times(total1562500)toget1sec.*/
+/*#define CONFIG_SYS_HZ			1000*/
+#define CONFIG_SYS_HZ 1562500
 
 /* valid baudrates */
 #define CONFIG_SYS_BAUDRATE_TABLE	{ 9600, 19200, 38400, 57600, 115200 }
@@ -147,7 +158,9 @@
  *
  * The stack sizes are set up in start.S using the settings below
  */
-#define CONFIG_STACKSIZE	0x40000		/* regular stack 256KB */
+/*#define CONFIG_STACKSIZE	0x40000*/		/* regular stack 256KB */
+#define CONFIG_STACKSIZE	0x80000		/* regular stack 512KB */
+
 
 /**********************************
  Support Clock Settings
@@ -171,7 +184,7 @@
 /* SMDK6410 has 2 banks of DRAM, but we use only one in U-Boot */
 #define CONFIG_NR_DRAM_BANKS	1
 #define PHYS_SDRAM_1		CONFIG_SYS_SDRAM_BASE	/* SDRAM Bank #1	*/
-#define PHYS_SDRAM_1_SIZE	0x08000000	/* 128 MB in Bank #1	*/
+#define PHYS_SDRAM_1_SIZE	0x10000000	/* 128 MB in Bank #1	*/
 
 #define CONFIG_SYS_FLASH_BASE		0x10000000
 #define CONFIG_SYS_MONITOR_BASE	0x00000000
@@ -195,7 +208,8 @@
 #define CONFIG_SYS_FLASH_ERASE_TOUT	(5 * CONFIG_SYS_HZ) /* Timeout for Flash Erase	*/
 #define CONFIG_SYS_FLASH_WRITE_TOUT	(5 * CONFIG_SYS_HZ) /* Timeout for Flash Write	*/
 
-#define CONFIG_ENV_SIZE		0x4000	/* Total Size of Environment Sector */
+/*#define CONFIG_ENV_SIZE		0x4000*/	/* Total Size of Environment Sector */
+#define CONFIG_ENV_SIZE		0x80000	/* Total Size of Environment Sector */
 
 /*
  * SMDK6410 board specific data
@@ -213,8 +227,10 @@
 
 #ifdef CONFIG_ENABLE_MMU
 #define CONFIG_SYS_MAPPED_RAM_BASE	0xc0000000
-#define CONFIG_BOOTCOMMAND	"nand read 0xc0018000 0x60000 0x1c0000;" \
-				"bootm 0xc0018000"
+/*#define CONFIG_BOOTCOMMAND	"nand read 0xc0018000 0x60000 0x1c0000;" \
+				"bootm 0xc0018000"*/
+#define CONFIG_BOOTCOMMAND	"nand read 0x50018000 0x100000 0x500000;" \
+				"bootm 0x50018000"
 #else
 #define CONFIG_SYS_MAPPED_RAM_BASE	CONFIG_SYS_SDRAM_BASE
 #define CONFIG_BOOTCOMMAND	"nand read 0x50018000 0x60000 0x1c0000;" \
@@ -224,9 +240,14 @@
 /* NAND U-Boot load and start address */
 #define CONFIG_SYS_UBOOT_BASE		(CONFIG_SYS_MAPPED_RAM_BASE + 0x07e00000)
 
-#define CONFIG_ENV_OFFSET		0x0040000
+#define CONFIG_ENV_OFFSET		0x0080000
 
 /* NAND configuration */
+/*add by kevin 2016-2-3*/
+#define NAND_DISABLE_CE()(NFCONT_REG|=(1<<1))
+#define NAND_ENABLE_CE()(NFCONT_REG&=~(1<<1))
+#define NF_TRANSRnB()do{while(!(NFSTAT_REG&(1<<0)));}while(0)
+/*add end*/
 #define CONFIG_SYS_MAX_NAND_DEVICE	1
 #define CONFIG_SYS_NAND_BASE		0x70200010
 #define CONFIG_SYS_S3C_NAND_HWECC
@@ -243,11 +264,11 @@
 #define CONFIG_SYS_NAND_U_BOOT_SIZE	(252 * 1024)	/* Size of RAM U-Boot image   */
 
 /* NAND chip page size		*/
-#define CONFIG_SYS_NAND_PAGE_SIZE	2048
+#define CONFIG_SYS_NAND_PAGE_SIZE	4096
 /* NAND chip block size		*/
-#define CONFIG_SYS_NAND_BLOCK_SIZE	(128 * 1024)
+#define CONFIG_SYS_NAND_BLOCK_SIZE	(512 * 1024)
 /* NAND chip page per block count  */
-#define CONFIG_SYS_NAND_PAGE_COUNT	64
+#define CONFIG_SYS_NAND_PAGE_COUNT	128
 /* Location of the bad-block label */
 #define CONFIG_SYS_NAND_BAD_BLOCK_POS	0
 /* Extra address cycle for > 128MiB */
