@@ -531,6 +531,7 @@ TftpStart (void)
 	 * Allow the user to choose TFTP blocksize and timeout.
 	 * TFTP protocol has a minimal timeout of 1 second.
 	 */
+#if 0
 	if ((ep = getenv("tftpblocksize")) != NULL)
 		TftpBlkSizeOption = simple_strtol(ep, NULL, 10);
 
@@ -546,7 +547,7 @@ TftpStart (void)
 
 	debug("TFTP blocksize = %i, timeout = %ld ms\n",
 		TftpBlkSizeOption, TftpTimeoutMSecs);
-
+#endif
 	TftpServerIP = NetServerIP;
 	if (BootFile[0] == '\0') {
 		sprintf(default_filename, "%02lX%02lX%02lX%02lX.img",

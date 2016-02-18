@@ -7,4 +7,5 @@ make clean
 make smdk6410_config
 make
 
+cp u-boot.bin /tftpboot
 

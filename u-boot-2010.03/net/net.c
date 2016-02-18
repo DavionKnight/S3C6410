@@ -99,7 +99,8 @@
 DECLARE_GLOBAL_DATA_PTR;
 
 #ifndef	CONFIG_ARP_TIMEOUT
-# define ARP_TIMEOUT		5000UL	/* Milliseconds before trying ARP again */
+//# define ARP_TIMEOUT		5000UL	/* Milliseconds before trying ARP again */
+# define ARP_TIMEOUT		5	/* Milliseconds before trying ARP again */
 #else
 # define ARP_TIMEOUT		CONFIG_ARP_TIMEOUT
 #endif
@@ -260,7 +261,8 @@ void ArpTimeoutCheck(void)
 	t = get_timer(0);
 
 	/* check for arp timeout */
-	if ((t - NetArpWaitTimerStart) > ARP_TIMEOUT) {
+//	if ((t - NetArpWaitTimerStart) > ARP_TIMEOUT) {
+	if ((t - NetArpWaitTimerStart) > ARP_TIMEOUT*CONFIG_SYS_HZ) {
 		NetArpWaitTry++;
 
 		if (NetArpWaitTry >= ARP_TIMEOUT_COUNT) {
@@ -765,7 +767,8 @@ static void PingStart(void)
 #if defined(CONFIG_NET_MULTI)
 	printf ("Using %s device\n", eth_get_name());
 #endif	/* CONFIG_NET_MULTI */
-	NetSetTimeout (10000UL, PingTimeout);
+	//NetSetTimeout (10000UL, PingTimeout);
+	NetSetTimeout (10*CONFIG_SYS_HZ, PingTimeout);
 	NetSetHandler (PingHandler);
 
 	PingSend();

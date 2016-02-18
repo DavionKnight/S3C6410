@@ -206,6 +206,11 @@ int eth_initialize(bd_t *bis)
 #if defined(CONFIG_DB64460) || defined(CONFIG_P3Mx)
 	mv6446x_eth_initialize(bis);
 #endif
+        /* for DM9000 init */
+#if defined(CONFIG_DRIVER_DM9000)
+        dm9000_initialize(bis);
+#endif  
+        /*------------------------------*/
 	if (!eth_devices) {
 		puts ("No ethernet found.\n");
 		show_boot_progress (-64);
