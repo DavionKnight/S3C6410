@@ -206,6 +206,11 @@ static int nand_load(struct mtd_info *mtd, unsigned int offs,
 			 */
 			while (page < CONFIG_SYS_NAND_PAGE_COUNT) {
 				nand_read_page(mtd, block, page, dst);
+#if 1
+				if(page < 4)
+				dst += CONFIG_SYS_NAND_PAGE_SIZE/2;
+				else
+#endif
 				dst += CONFIG_SYS_NAND_PAGE_SIZE;
 				page++;
 			}

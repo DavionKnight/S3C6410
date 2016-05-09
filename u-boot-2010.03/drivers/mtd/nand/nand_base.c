@@ -1323,6 +1323,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
 			else
 				ret = chip->ecc.read_page(mtd, chip, bufpoi,
 						page);
+
 			if (ret < 0)
 				break;
 
@@ -2062,11 +2063,23 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
 		writelen -= bytes;
 		if (!writelen)
 			break;
-
+#if 0
 		column = 0;
 		buf += bytes;
 		realpage++;
-
+#else
+		column = 0;
+		//buf += bytes;
+		if (page <4)
+		{
+			buf +=(bytes/2);
+			printf("page = %d\n",page);
+			printf("buf = %d\n",buf);
+		}
+		else
+			buf += bytes;
+		realpage++;
+#endif
 		page = realpage & chip->pagemask;
 		/* Check, if we cross a chip boundary */
 		if (!page) {
