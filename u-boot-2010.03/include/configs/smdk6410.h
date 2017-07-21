@@ -317,6 +317,19 @@
 #define CONFIG_MOVINAND
 */
 
+/*
+#define CONFIG_CMD_UBI
+#define CONFIG_CMD_UBIFS
+#define CONFIG_CMD_MTDPARTS
+#define CONFIG_MTD_DEVICE
+#define CONFIG_MTD_PARTITIONS
+#define CONFIG_RBTREE
+#define CONFIG_LZO
+#define MTDIDS_DEFAULT "nand0=nand0"
+#define MTDPARTS_DEFAULT "mtdparts=nand0: 0x00200000@0x0(u-boot),0x00200000@0x00200000(uenv),0x01400000@0x00400000(system),0x3e800000@0x01800000(user),-(reserved)"
+#define MTD_ACTIVE_PART "nand0,2"
+*/
+
 /* Settings as above boot configuration */
 #define CONFIG_ENV_IS_IN_NAND
 #define CONFIG_BOOTARGS		"console=ttySAC,115200"

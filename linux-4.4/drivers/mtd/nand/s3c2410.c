@@ -1135,7 +1135,7 @@ static struct platform_driver s3c24xx_nand_driver = {
 	},
 };
 
-module_platform_driver(s3c24xx_nand_driver);
+//module_platform_driver(s3c24xx_nand_driver);
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Ben Dooks <ben@simtec.co.uk>");

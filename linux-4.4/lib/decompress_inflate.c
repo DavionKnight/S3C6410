@@ -158,7 +158,20 @@ STATIC int INIT __gunzip(unsigned char *buf, long len,
 			rc = 0;
 			break;
 		} else if (rc != Z_OK) {
-			error("uncompression error");
+			if(rc==1)
+			error("uncompression errorrc=1");
+			else if(rc==2)
+			error("uncompression errorrc=2");
+			else if(rc==3)
+			error("uncompression errorrc=3");
+			else if(rc==4)
+			error("uncompression errorrc=4");
+			else if(rc==5)
+			error("uncompression errorrc=5");
+			else if(rc==6)
+			error("uncompression errorrc=6");
+			else
+			error("rc bigger than 6");
 			rc = -1;
 		}
 	}
